@@ -88,7 +88,7 @@ int main (int argc, char **argv)
     self->ctrl_conn = XOpenDisplay (NULL);
 
     self->escape_key  = XKeysymToKeycode (self->ctrl_conn,
-            XK_Escape);
+            XK_F1);
 
     if (!XQueryExtension (self->ctrl_conn,
                 "XTEST", &dummy, &dummy, &dummy))
@@ -210,7 +210,7 @@ void intercept (XPointer user_data, XRecordInterceptData *data)
         else
         {
             if (XkbKeycodeToKeysym (self->ctrl_conn, key_code, 0, 0)
-                    == XK_Control_L)
+                    == XK_Super_L)
             {
                 if (key_event == KeyPress)
                 {
@@ -241,9 +241,15 @@ void intercept (XPointer user_data, XRecordInterceptData *data)
                                     "Generating ESC!\n");
 
                             XTestFakeKeyEvent (self->ctrl_conn,
+                                    XKeysymToKeycode (self->ctrl_conn,XK_Alt_L),
+                                    True, 0);
+                            XTestFakeKeyEvent (self->ctrl_conn,
                                     self->escape_key, True, 0);
                             XTestFakeKeyEvent (self->ctrl_conn,
                                     self->escape_key, False, 0);
+                            XTestFakeKeyEvent (self->ctrl_conn,
+                                    XKeysymToKeycode (self->ctrl_conn,XK_Alt_L),
+                                    False, 0);
                             XFlush (self->ctrl_conn);
                         }
                     }
