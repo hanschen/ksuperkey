@@ -13,9 +13,11 @@ Installation
 ------------
 
 1. Install dependencies. On Ubuntu:
+
     $ sudo apt-get install git gcc make libx11-dev libxtst-dev
 
 2. Clone project and compile:
+
     $ git clone https://github.com/hanschen/ksuperkey.git
     $ cd ksuperkey
     $ make
