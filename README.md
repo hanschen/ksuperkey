@@ -1,31 +1,33 @@
-XCAPE
-=====
+KSUPERKEY
+=========
 
-xcape runs as a daemon and intercepts the Control key. If the 
-Control key is pressed and released on its own, it will generate an Escape
-key event.
+ksuperkey allows you to open the application launcher in KDE Plasma Desktop
+using the Super key (also known as the "Windows key"). If you hold down the
+Super key it will still act as a modifier key, allowing you to use it for
+other keyboard shortcuts.
 
-This makes more sense if you have remapped your Caps Lock key to Control.
-Future versions of this program might do that mapping for you, but for now
-this is something that you have to do yourself.
+ksuperkey is a small application that runs in the background as a daemon. It
+was forked from xcape by Albin Olsson: https://github.com/alols/xcape
 
-If you don't understand why anybody would want this, I'm guessing that Vim
-is not your favourite text editor ;)
+Installation
+------------
 
-Minimal building instructions
------------------------------
-
+1. Install dependencies. On Ubuntu:
     $ sudo apt-get install git gcc make libx11-dev libxtst-dev
-    $ mkdir xcape
-    $ cd xcape
-    $ git clone https://github.com/alols/xcape.git .
+
+2. Clone project and compile:
+    $ git clone https://github.com/hanschen/ksuperkey.git
+    $ cd ksuperkey
     $ make
+
+3. Launch ksuperkey. Make sure that the shortcut for the application launcher
+   is set to Alt+F1.
 
 Contact
 -------
 
 Find the latest version at
-https://github.com/alols/xcape
+https://github.com/hanschen/ksuperkey
 
 The author can be reached at
-albin dot olsson at gmail dot com
+contact at hanschen dot org
