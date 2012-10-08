@@ -1,7 +1,7 @@
 INSTALL=install
 PREFIX=/usr
 
-TARGET := xcape
+TARGET := ksuperkey
 
 CFLAGS += -Wall
 CFLAGS += `pkg-config --cflags xtst x11`
