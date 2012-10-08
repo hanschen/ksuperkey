@@ -1,6 +1,7 @@
 /************************************************************************
  * xcape.c
  *
+ * Copyright 2012 Hans Chen
  * Copyright 2012 Albin Olsson
  *
  * This program is free software: you can redistribute it and/or modify
