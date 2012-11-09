@@ -33,16 +33,16 @@ Usage
 -----
     $ ksuperkey [-d] [-t <timeout ms>] [-e <map-expression>]
 
-#### `-d`
+`-d`
 
 Debug mode. Does not fork into the background.
 
-#### `-t <timeout ms>`
+`-t <timeout ms>`
 
 If you hold a key longer than this timeout, ksuperkey will not generate a key
 event. Default is 50 ms.
 
-#### `-e <map-expression>`
+`-e <map-expression>`
 
 The expression has the grammar `'ModKey=Key[|OtherKey][;NextExpression]'`
 
