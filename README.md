@@ -31,7 +31,7 @@ Installation
 
 Usage
 -----
-    $ xcape [-d] [-t <timeout ms>] [-e <map-expression>]
+    $ ksuperkey [-d] [-t <timeout ms>] [-e <map-expression>]
 
 ### `-d`
 
@@ -39,7 +39,7 @@ Debug mode. Does not fork into the background.
 
 ### `-t <timeout ms>`
 
-If you hold a key longer than this timeout, xcape will not generate a key
+If you hold a key longer than this timeout, ksuperkey will not generate a key
 event. Default is 50 ms.
 
 ### `-e <map-expression>`
@@ -51,26 +51,25 @@ The list of key names is found in the header file `X11/keysymdef.h`
 
 #### Example
 
-    xcape -e 'Shift_L=Escape;Control_L=Control_L|O'
+    ksuperkey -e 'Control_L=Escape;Super_L=Alt_L|F2'
 
-This will make Left Shift generate Escape when pressed and released on
-it's own, and Left Control generate Ctrl-O combination when pressed and
-released on it's own.
+This will make Left Control generate Escape when pressed and released on
+its own, and Left Super generate Alt+F2 combination when pressed and
+released on its own.
 
 Note regarding xmodmap
 ----------------------
 
-If you are in the habit of remapping keycodes to keysyms (eg, using xmodmap),
-there are two issues you may encounter.
+If you are in the habit of remapping keycodes to keysyms (e.g. using xmodmap),
+there are two issues you may encounter:
 
-1) You will need to restart xcape after every time you modify the mapping from
-   keycodes to keysyms (eg, with xmodmap), or xcape will still use the old
-   mapping.
+1) You will need to restart ksuperkey after every time you modify the mapping 
+   from keycodes to keysyms (e.g. with xmodmap), or kusperkey will still use 
+   the old mapping.
    
 2) The key you wish to send must have a defined keycode. So for example, with
-   the default mapping `Control_L=Escape`, you still need an escape key defined
-   in your xmodmap mapping. (I get around this by using 255, which my keyboard
-   cannot send).
+   `Control_L=Escape`, you need an Escape key defined in your xmodmap mapping. 
+   (A workaround is to use 255, which some keyboards cannot send.)
 
 Contact
 -------
