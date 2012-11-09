@@ -85,7 +85,7 @@ int main (int argc, char **argv)
 {
     XCape_t *self = malloc (sizeof (XCape_t));
     int dummy, ch;
-    static char default_mapping[] = "Control_L=Escape";
+    static char default_mapping[] = "Super_L=Alt_L|F1";
     char *mapping = default_mapping;
     self->debug = False;
     self->timeout.tv_sec = 0;
