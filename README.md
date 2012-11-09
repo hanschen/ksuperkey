@@ -49,7 +49,14 @@ The expression has the grammar `'ModKey=Key[|OtherKey][;NextExpression]'`
 The list of key names is found in the header file `X11/keysymdef.h`
 (remove the `XK_` prefix).
 
-#### Example
+#### Example 1
+
+    ksuperkey
+
+Makes left Super key generate Alt+F1 when pressed and released on its own (does 
+not affect existing keyboard combinations using the Super key).
+
+#### Example 2
 
     ksuperkey -e 'Control_L=Escape;Super_L=Alt_L|F2'
 
