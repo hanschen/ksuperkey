@@ -285,8 +285,8 @@ void handle_key (XCape_t *self, KeyMap_t *key,
                 for (k = key->to_keys; k != NULL; k = k->next)
                 {
                     if (self->debug) fprintf (stdout, "Generating %s!\n",
-                            XKeysymToString (XKeycodeToKeysym (self->ctrl_conn,
-                                    k->key, 0)));
+                            XKeysymToString (XkbKeycodeToKeysym (self->ctrl_conn,
+                                    k->key, 0, 0)));
 
                     XTestFakeKeyEvent (self->ctrl_conn,
                             k->key, True, 0);

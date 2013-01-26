@@ -15,7 +15,7 @@ Installation
 1. Install dependencies. On Ubuntu:
 
     ```
-    $ sudo apt-get install git gcc make libx11-dev libxtst-dev
+    $ sudo apt-get install git gcc make libx11-dev libxtst-dev pkg-config
     ```
 
 2. Clone project and compile:
