@@ -18,6 +18,8 @@ Installation
     $ sudo apt-get install git gcc make libx11-dev libxtst-dev pkg-config
     ```
 
+    On some systems you also need to install the `build-essential` package.
+
 2. Clone project and compile:
 
     ```
