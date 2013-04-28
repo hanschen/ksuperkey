@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=ksuperkey
+X-DBUS-StartupType=none
+Name=ksuperkey
+Type=Service
+X-KDE-StartupNotify=false
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=2
