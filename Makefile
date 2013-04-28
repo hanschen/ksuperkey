@@ -15,6 +15,6 @@ install:
 	$(INSTALL) -Dm 755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/$(TARGET)
 
 clean:
-	rm $(TARGET)
+	if [ -e $(TARGET) ]; then rm $(TARGET); fi
 
 .PHONY: clean
