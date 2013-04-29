@@ -13,8 +13,9 @@ $(TARGET): xcape.c
 
 install:
 	$(INSTALL) -Dm 755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/$(TARGET)
+	$(INSTALL) -Dm 644 ksuperkey.desktop $(DESTDIR)$(PREFIX)/share/autostart/ksuperkey.desktop
 
 clean:
-	rm $(TARGET)
+	if [ -e $(TARGET) ]; then rm $(TARGET); fi
 
 .PHONY: clean
