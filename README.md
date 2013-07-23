@@ -51,6 +51,10 @@ The expression has the grammar `'ModKey=Key[|OtherKey][;NextExpression]'`
 The list of key names is found in the header file `X11/keysymdef.h`
 (remove the `XK_` prefix).
 
+Alternatively, you can specify ModKey in decimal (prefix `#`), octal (`#0`), or
+hexadecimal (`#0x`). It will be interpreted as a keycode unless no corresponding
+key name is found.
+
 #### Example 1
 
     ksuperkey
