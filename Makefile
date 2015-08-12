@@ -20,6 +20,6 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/share/autostart/ksuperkey.desktop
 
 clean:
-	if [ -e $(TARGET) ]; then rm $(TARGET); fi
+	if [ -e $(TARGET) ]; then rm -f $(TARGET); fi
 
 .PHONY: clean
