@@ -1,5 +1,6 @@
 INSTALL=install
 PREFIX=/usr
+MANDIR?=/local/man/man1
 
 TARGET := ksuperkey
 
@@ -7,6 +8,8 @@ CFLAGS += -Wall
 CFLAGS += `pkg-config --cflags xtst x11`
 LDFLAGS += `pkg-config --libs xtst x11`
 LDFLAGS += -pthread
+
+all: $(TARGET)
 
 $(TARGET): xcape.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
@@ -22,4 +25,4 @@ uninstall:
 clean:
 	if [ -e $(TARGET) ]; then rm $(TARGET); fi
 
-.PHONY: clean
+.PHONY: all clean install

@@ -1,7 +1,7 @@
 /************************************************************************
  * xcape.c
  *
- * Copyright 2012 Albin Olsson
+ * Copyright 2015 Albin Olsson
  * Modified by Hans Chen
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ typedef struct _Key_t
 
 typedef struct _KeyMap_t
 {
-    Bool UseKeyCode;        // (for from) instead of KeySym; ignore latter
+    Bool UseKeyCode;        /* (for from) instead of KeySym; ignore latter */
     KeySym from_ks;
     KeyCode from_kc;
     Key_t *to_keys;
@@ -77,9 +77,15 @@ void *sig_handler (void *user_data);
 
 void intercept (XPointer user_data, XRecordInterceptData *data);
 
-KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping);
+KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping, Bool debug);
+
+void delete_mapping (KeyMap_t *map);
 
 Key_t *key_add_key (Key_t *keys, KeyCode key);
+
+void delete_keys (Key_t *keys);
+
+void print_usage (const char *program_name);
 
 /************************************************************************
  * Main function
@@ -87,14 +93,23 @@ Key_t *key_add_key (Key_t *keys, KeyCode key);
 int main (int argc, char **argv)
 {
     XCape_t *self = malloc (sizeof (XCape_t));
+
     int dummy, ch;
+
     static char default_mapping[] = "Super_L=Alt_L|F1";
     char *mapping = default_mapping;
+
+    XRecordRange *rec_range = XRecordAllocRange();
+    XRecordClientSpec client_spec = XRecordAllClients;
+
     self->debug = False;
     self->timeout.tv_sec = 0;
     self->timeout.tv_usec = 500000;
     self->timeout_valid = True;
     self->generated = NULL;
+
+    rec_range->device_events.first = KeyPress;
+    rec_range->device_events.last = ButtonRelease;
 
     while ((ch = getopt (argc, argv, "de:t:")) != -1)
     {
@@ -122,11 +137,22 @@ int main (int argc, char **argv)
             }
             break;
         default:
-            fprintf (stdout, "Usage: %s [-d] [-t timeout_ms] [-e <mapping>]\n", argv[0]);
-            fprintf (stdout,
-                    "Runs as a daemon unless -d flag is set\n");
+            print_usage (argv[0]);
             return EXIT_SUCCESS;
         }
+    }
+
+    if (optind < argc)
+    {
+        fprintf (stderr, "Not a command line option: '%s'\n", argv[optind]);
+        print_usage (argv[0]);
+        return EXIT_SUCCESS;
+    }
+
+    if (!XInitThreads ())
+    {
+        fprintf (stderr, "Failed to initialize threads.\n");
+        exit (EXIT_FAILURE);
     }
 
     self->data_conn = XOpenDisplay (NULL);
@@ -148,17 +174,20 @@ int main (int argc, char **argv)
         fprintf (stderr, "Failed to obtain xrecord version\n");
         exit (EXIT_FAILURE);
     }
-    if (!XkbQueryExtension (self->ctrl_conn, &dummy, &dummy, 
+    if (!XkbQueryExtension (self->ctrl_conn, &dummy, &dummy,
             &dummy, &dummy, &dummy))
     {
         fprintf (stderr, "Failed to obtain xkb version\n");
         exit (EXIT_FAILURE);
     }
 
-    self->map = parse_mapping (self->ctrl_conn, mapping);
+    self->map = parse_mapping (self->ctrl_conn, mapping, self->debug);
 
     if (self->map == NULL)
+    {
+        fprintf (stderr, "Failed to parse_mapping\n");
         exit (EXIT_FAILURE);
+    }
 
     if (self->debug != True)
         daemon (0, 0);
@@ -170,11 +199,6 @@ int main (int argc, char **argv)
 
     pthread_create (&self->sigwait_thread,
             NULL, sig_handler, self);
-
-    XRecordRange *rec_range = XRecordAllocRange();
-    rec_range->device_events.first = KeyPress;
-    rec_range->device_events.last = ButtonRelease;
-    XRecordClientSpec client_spec = XRecordAllClients;
 
     self->record_ctx = XRecordCreateContext (self->ctrl_conn,
             0, &client_spec, 1, &rec_range, 1);
@@ -194,15 +218,23 @@ int main (int argc, char **argv)
         exit (EXIT_FAILURE);
     }
 
+    pthread_join (self->sigwait_thread, NULL);
+
     if (!XRecordFreeContext (self->ctrl_conn, self->record_ctx))
     {
         fprintf (stderr, "Failed to free xrecord context\n");
     }
 
+    if (self->debug) fprintf (stdout, "main exiting\n");
+
+    XFree (rec_range);
+
     XCloseDisplay (self->ctrl_conn);
     XCloseDisplay (self->data_conn);
 
-    if (self->debug) fprintf (stdout, "main exiting\n");
+    delete_mapping (self->map);
+
+    free (self);
 
     return EXIT_SUCCESS;
 }
@@ -222,6 +254,8 @@ void *sig_handler (void *user_data)
 
     if (self->debug) fprintf (stdout, "Caught signal %d!\n", sig);
 
+    XLockDisplay (self->ctrl_conn);
+
     if (!XRecordDisableContext (self->ctrl_conn,
                 self->record_ctx))
     {
@@ -230,6 +264,8 @@ void *sig_handler (void *user_data)
     }
 
     XSync (self->ctrl_conn, False);
+
+    XUnlockDisplay (self->ctrl_conn);
 
     if (self->debug) fprintf (stdout, "sig_handler exiting...\n");
 
@@ -320,6 +356,8 @@ void intercept (XPointer user_data, XRecordInterceptData *data)
     static Bool mouse_pressed = False;
     KeyMap_t *km;
 
+    XLockDisplay (self->ctrl_conn);
+
     if (data->category == XRecordFromServer)
     {
         int     key_event = data->data[0];
@@ -358,37 +396,36 @@ void intercept (XPointer user_data, XRecordInterceptData *data)
         {
             mouse_pressed = False;
         }
-        else
+        for (km = self->map; km != NULL; km = km->next)
         {
-            for (km = self->map; km != NULL; km = km->next)
+            if ((km->UseKeyCode == False
+                    && XkbKeycodeToKeysym (self->ctrl_conn, key_code, 0, 0)
+                        == km->from_ks)
+                || (km->UseKeyCode == True
+                    && key_code == km->from_kc))
             {
-                if ((km->UseKeyCode == False
-                        && XkbKeycodeToKeysym (self->ctrl_conn, key_code, 0, 0)
-                            == km->from_ks)
-                    || (km->UseKeyCode == True
-                        && key_code == km->from_kc))
-                {
-                    handle_key (self, km, mouse_pressed, key_event);
-                }
-                else if (km->pressed && key_event == KeyPress)
-                {
-                    km->used = True;
-                }
+                handle_key (self, km, mouse_pressed, key_event);
+            }
+            else if (km->pressed
+                    && (key_event == KeyPress || key_event == ButtonPress))
+            {
+                km->used = True;
             }
         }
     }
 
 exit:
+    XUnlockDisplay (self->ctrl_conn); 
     XRecordFreeData (data);
 }
 
-KeyMap_t *parse_token (Display *dpy, char *token)
+KeyMap_t *parse_token (Display *dpy, char *token, Bool debug)
 {
     KeyMap_t *km = NULL;
     KeySym    ks;
     char      *from, *to, *key;
-    KeyCode   code;        // keycode (to)
-    long      fromcode;    // keycode (from)
+    KeyCode   code;        /* keycode (to)   */
+    long      fromcode;    /* keycode (from) */
 
     to = token;
     from = strsep (&to, "=");
@@ -400,13 +437,22 @@ KeyMap_t *parse_token (Display *dpy, char *token)
                && strsep (&from, "#") != NULL)
         {
             errno = 0;
-            fromcode = strtoul (from, NULL, 0); // dec, oct, hex automatically
+            fromcode = strtoul (from, NULL, 0); /* dec, oct, hex automatically */
             if (errno == 0
                    && fromcode <=255
                    && XkbKeycodeToKeysym (dpy, (KeyCode) fromcode, 0, 0) != NoSymbol)
             {
                 km->UseKeyCode = True;
                 km->from_kc = (KeyCode) fromcode;
+                if (debug)
+                {
+                  KeySym ks_temp = XkbKeycodeToKeysym (dpy, (KeyCode) fromcode, 0, 0);
+                  fprintf(stderr, "Assigned mapping from from \"%s\" ( keysym 0x%x, "
+                          "key code %d)\n",
+                          XKeysymToString(ks_temp),
+                          (unsigned) ks_temp,
+                          (unsigned) km->from_kc);
+                }
             }
             else
             {
@@ -425,6 +471,15 @@ KeyMap_t *parse_token (Display *dpy, char *token)
             km->UseKeyCode  = False;
             km->from_ks     = ks;
             km->to_keys     = NULL;
+
+            if (debug)
+            {
+              fprintf(stderr, "Assigned mapping from \"%s\" ( keysym 0x%x, "
+                      "key code %d)\n",
+                      XKeysymToString (km->from_ks),
+                      (unsigned) km->from_ks,
+                      (unsigned) XKeysymToKeycode (dpy, km->from_ks));
+            }
         }
 
         for(;;)
@@ -448,6 +503,14 @@ KeyMap_t *parse_token (Display *dpy, char *token)
                 return NULL;
             }
             km->to_keys = key_add_key (km->to_keys, code);
+
+            if (debug)
+            {
+              fprintf(stderr, "to \"%s\" (keysym 0x%x, key code %d)\n",
+                      key,
+                      (unsigned) XStringToKeysym (key),
+                      (unsigned) code);
+            }
         }
     }
     else
@@ -457,7 +520,7 @@ KeyMap_t *parse_token (Display *dpy, char *token)
     return km;
 }
 
-KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping)
+KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping, Bool debug)
 {
     char     *token;
     KeyMap_t *rval, *km, *nkm;
@@ -470,7 +533,7 @@ KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping)
         if (token == NULL)
             break;
 
-        nkm = parse_token (ctrl_conn, token);
+        nkm = parse_token (ctrl_conn, token, debug);
 
         if (nkm != NULL)
         {
@@ -485,4 +548,29 @@ KeyMap_t *parse_mapping (Display *ctrl_conn, char *mapping)
     }
 
     return rval;
+}
+
+void delete_mapping (KeyMap_t *map)
+{
+    while (map != NULL) {
+        KeyMap_t *next = map->next;
+        delete_keys (map->to_keys);
+        free (map);
+        map = next;
+    }
+}
+
+void delete_keys (Key_t *keys)
+{
+    while (keys != NULL) {
+        Key_t *next = keys->next;
+        free (keys);
+        keys = next;
+    }
+}
+
+void print_usage (const char *program_name)
+{
+    fprintf (stdout, "Usage: %s [-d] [-t timeout_ms] [-e <mapping>]\n", program_name);
+    fprintf (stdout, "Runs as a daemon unless -d flag is set\n");
 }
