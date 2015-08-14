@@ -21,6 +21,6 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/$(TARGET)
 
 clean:
-	if [ -e $(TARGET) ]; then rm $(TARGET); fi
+	if [ -e $(TARGET) ]; then rm -f $(TARGET); fi
 
 .PHONY: all clean install
