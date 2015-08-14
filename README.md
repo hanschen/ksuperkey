@@ -9,6 +9,7 @@ other keyboard shortcuts.
 ksuperkey is a small application that runs in the background as a daemon. It
 was forked from xcape by Albin Olsson: https://github.com/alols/xcape
 
+
 Installation
 ------------
 
@@ -31,8 +32,10 @@ Installation
 3. Launch ksuperkey. Make sure that the shortcut for the application launcher
    is set to Alt+F1.
 
+
 Usage
 -----
+
     $ ksuperkey [-d] [-t <timeout ms>] [-e <map-expression>]
 
 `-d`
@@ -59,12 +62,14 @@ You can also specify ModKey in decimal (prefix `#`), octal (`#0`), or
 hexadecimal (`#0x`). It will be interpreted as a keycode unless no corresponding
 key name is found.
 
+
 #### Example 1
 
     ksuperkey
 
 Makes left Super key generate Alt+F1 when pressed and released on its own (does 
 not affect existing keyboard combinations using the Super key).
+
 
 #### Example 2
 
@@ -73,6 +78,7 @@ not affect existing keyboard combinations using the Super key).
 This will make Left Control generate Escape when pressed and released on
 its own, and Left Super generate Alt+F2 combination when pressed and
 released on its own.
+
 
 Note regarding xmodmap
 ----------------------
@@ -87,6 +93,7 @@ there are two issues you may encounter:
 2) The key you wish to send must have a defined keycode. So for example, with
    `Control_L=Escape`, you need an Escape key defined in your xmodmap mapping. 
    (A workaround is to use 255, which some keyboards cannot send.)
+
 
 Contact
 -------
