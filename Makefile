@@ -18,7 +18,6 @@ install:
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/$(TARGET)
-	rm -f $(DESTDIR)$(PREFIX)/share/autostart/ksuperkey.desktop
 
 clean:
 	if [ -e $(TARGET) ]; then rm $(TARGET); fi
