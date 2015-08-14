@@ -87,7 +87,7 @@ If you are in the habit of remapping keycodes to keysyms (e.g. using xmodmap),
 there are two issues you may encounter:
 
 1) You will need to restart ksuperkey after every time you modify the mapping 
-   from keycodes to keysyms (e.g. with xmodmap), or kusperkey will still use 
+   from keycodes to keysyms (e.g. with xmodmap), or ksuperkey will still use 
    the old mapping.
    
 2) The key you wish to send must have a defined keycode. So for example, with
