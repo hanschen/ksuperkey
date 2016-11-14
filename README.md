@@ -15,6 +15,10 @@ was forked from xcape by Albin Olsson: https://github.com/alols/xcape
 Installation
 ------------
 
+For a list of distribution-specific packages, please see the
+[ksuperkey page in the KDE Store](https://store.kde.org/p/1081256/).
+Below are some generic instructions for how to compile ksuperkey from source.
+
 1. Install dependencies. On Ubuntu:
 
     ```
