@@ -31,7 +31,13 @@ Installation
     $ make
     ```
 
-3. Launch ksuperkey. Make sure that the shortcut for the application launcher
+3. Install system-wide using e.g. `sudo` (optional):
+
+    ```
+    $ sudo make install
+    ```
+
+4. Launch ksuperkey. Make sure that the shortcut for the application launcher
    is set to Alt+F1.
 
 
