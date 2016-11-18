@@ -6,8 +6,9 @@ using the Super key (also known as the "Windows key"). If you hold down the
 Super key it will still act as a modifier key, allowing you to use it for
 other keyboard shortcuts.
 
-ksuperkey is a small application that runs in the background as a daemon. It
-was forked from xcape by Albin Olsson: https://github.com/alols/xcape
+ksuperkey is a small desktop-agnostic application that runs in the background
+as a daemon. It was forked from xcape by Albin Olsson:
+https://github.com/alols/xcape
 
 **NOTE:** This feature is supported by default in Plasma 5.8 and above.
 However, ksuperkey may still be useful to map modifier keys (such as the Super
