@@ -16,10 +16,10 @@ key) to arbitrary keyboard shortcuts.
 If you want to use ksuperkey to map the Super key in Plasma 5.8 and above,
 make sure to disable the Plasma mapping by modifying `~/.config/kwinrc` to:
 
-    ```
-    [ModifierOnlyShortcuts]
-    Meta=
-    ```
+```
+[ModifierOnlyShortcuts]
+Meta=
+```
 
 
 Installation
