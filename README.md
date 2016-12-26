@@ -13,6 +13,13 @@ https://github.com/alols/xcape
 **NOTE:** This feature is supported by default in Plasma 5.8 and above.
 However, ksuperkey may still be useful to map modifier keys (such as the Super
 key) to arbitrary keyboard shortcuts.
+If you want to use ksuperkey to map the Super key in Plasma 5.8 and above,
+make sure to disable the Plasma mapping by modifying `~/.config/kwinrc` to:
+
+    ```
+    [ModifierOnlyShortcuts]
+    Meta=
+    ```
 
 
 Installation
