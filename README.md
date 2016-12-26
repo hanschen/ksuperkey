@@ -10,7 +10,8 @@ ksuperkey is a small desktop-agnostic application that runs in the background
 as a daemon. It was forked from xcape by Albin Olsson:
 https://github.com/alols/xcape
 
-**NOTE:** This feature is supported by default in Plasma 5.8 and above.
+**Plasma 5.8 and above:** This feature is supported by default in Plasma 5.8
+and above.
 However, ksuperkey may still be useful to map modifier keys (such as the Super
 key) to arbitrary keyboard shortcuts.
 If you want to use ksuperkey to map the Super key in Plasma 5.8 and above,
