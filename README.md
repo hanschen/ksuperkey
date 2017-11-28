@@ -30,13 +30,20 @@ For a list of distribution-specific packages, please see the
 [ksuperkey page in the KDE Store](https://store.kde.org/p/1081256/).
 Below are some generic instructions for how to compile ksuperkey from source.
 
-1. Install dependencies. On Ubuntu:
+1. Install dependencies. 
 
+   Ubuntu:
     ```
     $ sudo apt-get install git gcc make libx11-dev libxtst-dev pkg-config
     ```
 
-    On some systems you also need to install the `build-essential` package.
+    CentOS:
+    ```
+    $ sudo yum install git gcc make libX11-devel libXtst-devel pkgconfig
+    ```
+
+    On some systems you also need to install the `build-essential` (or
+    equivalent) package.
 
 2. Clone project and compile:
 
