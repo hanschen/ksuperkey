@@ -2,7 +2,6 @@
 Exec=ksuperkey
 X-DBUS-StartupType=none
 Name=ksuperkey
-Type=Service
+Type=Application
 X-KDE-StartupNotify=false
-OnlyShowIn=KDE;
 X-KDE-autostart-phase=2
