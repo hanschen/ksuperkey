@@ -1,8 +1,9 @@
 KSUPERKEY
 =========
 
-ksuperkey allows you to open the application launcher in KDE Plasma using the
-Super key (also known as "Meta" or "the Windows key").
+ksuperkey allows you to open the application launcher in desktop environments
+such as KDE Plasma and Xfce using the Super key (also known as "Meta" or "the
+Windows key").
 If you hold down the Super key it will still act as a modifier key, allowing
 you to use it for other keyboard shortcuts.
 
