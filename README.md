@@ -8,7 +8,8 @@ If you hold down the Super key it will still act as a modifier key, allowing
 you to use it for other keyboard shortcuts.
 
 ksuperkey is a small desktop-agnostic application that runs in the background
-as a daemon. It was forked from xcape by Albin Olsson:
+as a daemon under X11. It does not work under Wayland.
+ksuperkey was forked from xcape created by Albin Olsson:
 https://github.com/alols/xcape
 
 **Plasma 5.8 and above:**
